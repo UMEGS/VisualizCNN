@@ -28,12 +28,11 @@ if selected_layer:
                              activation=activation_function,
                              padding=padding_type)
 
-
     elif selected_layer == MaxPooling2D or selected_layer == AveragePooling2D:
         pool_size = st.number_input('Pool Size (f x f) f in (1-100)', min_value=1, max_value=100, value=2)
         stride = st.number_input('Stride( s x s)  s in (1 - 100)', min_value=1, max_value=100, value=2)
         padding_type = st.selectbox('Padding Type ', ['valid', 'same'])
-        around_padding = st.number_input('Around Padding (p x p) p in (1 - 100)', min_value=1, max_value=100, value=0)
+        around_padding = st.number_input('Around Padding (p x p) p in (1 - 100)', min_value=0, max_value=100, value=0)
 
         apply_layer = selected_layer(pool_size=pool_size,
                                      strides=stride,
@@ -50,7 +49,7 @@ if selected_layer:
         apply_layer = ZeroPadding2D(padding=around_padding)
 
 if input_image is not None and apply_layer is not None:
-    st.image(input_image, caption='Uploaded Image.', use_column_width=True)
+    st.image(input_image, caption='Uploaded Image.', use_column_width=True, width=50,)
     image = tf.keras.preprocessing.image.load_img(input_image, target_size=(150, 150))
     input_arr = tf.keras.preprocessing.image.img_to_array(image)
     st.write('Input Array Shape: ', input_arr.shape)
@@ -61,4 +60,5 @@ if input_image is not None and apply_layer is not None:
     st.write('Output Array Shape: ', converted_input[0].shape)
 
     st.write('Result after applying the layer')
-    st.image(converted_input[0], use_column_width=True, caption='Result after applying the layer', clamp=True, channels='RGB')
+    output_image = tf.keras.preprocessing.image.array_to_img(converted_input[0])
+    st.image(output_image, use_column_width=True, caption='Result after applying the layer', clamp=True, channels='RGB')
